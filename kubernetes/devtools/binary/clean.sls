@@ -13,7 +13,7 @@
 {{ formula }}-devtools-binary-{{ tool }}-clean:
   file.absent:
     - names:
-      - {{ d.devtools['pkg'][tool]['path'] }}{{ '\' if grain.os == 'Windows' else '/bin/' }}{{ tool }}
+      - {{ d.devtools['pkg'][tool]['path'] }}{{ '\' if grains.os == 'Windows' else '/bin/' }}{{ tool }}
                 {%- for cmd in d.devtools['pkg'][tool]['commands']|unique %}
       - /usr/local/bin/{{ cmd }}
                 {%- endfor %}
