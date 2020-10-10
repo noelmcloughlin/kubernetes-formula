@@ -26,15 +26,15 @@
         - mode
   cmd.run:
     - names:
-      - curl -Lo {{ p[tool]['path'] }}/bin/{{ tool }} {{ p[tool]['binary']['source'] }}
-      - chmod '0755' {{ p[tool]['path'] }}/bin/{{ tool }} 2>/dev/null
+      - curl -Lo {{ p[tool]['path'] }}{{ '' if grains.os == 'Windows' else '/bin/' }}{{ tool }} {{ p[tool]['binary']['source'] }}
+      - chmod '0755' {{ p[tool]['path'] }}{{ '' if grains.os == 'Windows' else '/bin/' }}{{ tool }} 2>/dev/null
     - retry: {{ d.retry_option|json }}
     - user: {{ d.identity.rootuser }}
     - group: {{ d.identity.rootgroup }}
                 {%- if 'source_hash' in p[tool]['binary'] and p[tool]['binary']['source_hash'] %}
   module.run:
     - name: file.check_hash
-    - path: {{ p[tool]['path'] }}/bin/{{ tool }}
+    - path: {{ p[tool]['path'] }}{{ '' if grains.os == 'Windows' else '/bin/' }}{{ tool }}
     - file_hash: {{ p[tool]['binary']['source_hash'] }}
     - require:
       - cmd: {{ formula }}-devtools-binary-{{ tool }}-install
@@ -47,7 +47,7 @@
     - name: /usr/local/bin/{{ cmd }}
     - target: {{ p[tool]['path'] }}/bin/{{ tool }}
     - force: True
-    - onlyif: test -f {{ p[tool]['path'] }}/bin/{{ tool }}
+    - onlyif: test -f {{ p[tool]['path'] }}/{{ tool }}
     - require:
       - cmd: {{ formula }}-devtools-binary-{{ tool }}-install
                     {% endfor %}

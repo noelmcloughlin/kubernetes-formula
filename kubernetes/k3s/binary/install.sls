@@ -25,7 +25,7 @@
 
 {{ formula }}-k3s-binary-install:
   file.managed:
-    - name: {{ d.k3s.pkg.path }}/bin/k3s
+    - name: {{ d.k3s.pkg.path }}{{ '' if grains.os == 'Windows' else '/bin' }}k3s
     - source: {{ d.k3s.pkg.binary.source }}
     - source_hash: {{ d.k3s.pkg.binary.source_hash }}
     - user: {{ d.identity.rootuser }}

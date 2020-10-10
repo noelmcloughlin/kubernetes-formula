@@ -6,6 +6,7 @@
 {%- set formula = d.formula %}
 
     {%- if d.client.pkg.use_upstream == 'binary' %}
+        {%- set path = '%s%s'|format(d.client.pkg.path, '\' if grains.os == 'Windows' else '/bin') %} 
 
 {{ formula }}-client-binary-install:
   pkg.installed:
@@ -26,15 +27,15 @@
         - mode
   cmd.run:
     - names:
-      - curl -Lo {{ d.client.pkg.path }}/bin/kubectl {{ d.client.pkg.binary.source }}
-      - chmod '0755' {{ d.client.pkg.path }}/bin/kubectl 2>/dev/null
+      - curl -Lo {{ path }}kubectl {{ d.client.pkg.binary.source }}
+      - chmod '0755' {{ path }}kubectl 2>/dev/null
     - retry: {{ d.retry_option|json }}
     - user: {{ d.identity.rootuser }}
     - group: {{ d.identity.rootgroup }}
           {%- if 'source_hash' in d.client.pkg.binary and d.client.pkg.binary.source_hash %}
   module.run:
     - name: file.check_hash
-    - path: {{ d.client.pkg.path }}/bin/kubectl
+    - path: {{ path }}kubectl
     - file_hash: {{ d.client.pkg.binary.source_hash }}
     - require:
       - cmd: {{ formula }}-client-binary-install
@@ -43,7 +44,7 @@
 {{ formula }}-client-binary-install-symlink:
   file.symlink:
     - name: /usr/local/bin/kubectl
-    - target: {{ d.client.pkg.path }}/bin/kubectl
+    - target: {{ path }}kubectl
     - force: True
     - require:
       - cmd: {{ formula }}-client-binary-install

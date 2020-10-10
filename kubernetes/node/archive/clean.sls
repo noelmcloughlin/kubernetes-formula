@@ -13,7 +13,7 @@ include:
   file.absent:
     - names:
       - {{ d.dir.tmp }}/kubernetes-node*
-      - {{ d.node.pkg.path }}/bin
+      - {{ d.node.pkg.path }}{{ '' if grains.os == 'Windows' else '/bin' }}
         {%- if d.linux.altpriority|int == 0 or grains.os_family in ('Arch', 'MacOS') %}
             {%- for cmd in d.node.pkg.commands|unique %}
       - /usr/local/bin/{{ cmd }}

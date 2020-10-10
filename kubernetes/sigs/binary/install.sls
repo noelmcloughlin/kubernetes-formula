@@ -17,7 +17,7 @@
 
 {{ formula }}-sigs-binary-{{ tool }}-install:
   file.directory:
-    - name: {{ p['path'] }}/bin
+    - name: {{ p['path'] }}{{ '/bin' if grains.os != 'Windows' else '' }}
     - user: {{ d.identity.rootuser }}
     - group: {{ d.identity.rootgroup }}
     - mode: 755
@@ -32,15 +32,15 @@
         - mode
   cmd.run:
     - names:
-      - curl -Lo {{ p['path'] }}/bin/{{ tool }} {{ p['binary']['source'] }}
-      - chmod '0755' {{ p['path'] }}/bin/{{ tool }} 2>/dev/null
+      - curl -Lo {{ p['path'] }}{{ '/bin/' if grains.os != 'Windows' else '\' }}{{ tool }} {{ p['binary']['source'] }}
+      - chmod '0755' {{ p['path'] }}{{ '/bin/' if grains.os != 'Windows' else '\' }}{{ tool }} 2>/dev/null
     - retry: {{ d.retry_option|json }}
     - user: {{ d.identity.rootuser }}
     - group: {{ d.identity.rootgroup }}
                 {%- if 'source_hash' in p['binary'] and p['binary']['source_hash'] %}
   module.run:
     - name: file.check_hash
-    - path: {{ p['path'] }}/bin/{{ tool }}
+    - path: {{ p['path'] }}{{ '/bin/' if grains.os != 'Windows' else '\' }}{{ tool }}
     - file_hash: {{ p['binary']['source_hash'] }}
     - require:
       - cmd: {{ formula }}-sigs-binary-{{ tool }}-install

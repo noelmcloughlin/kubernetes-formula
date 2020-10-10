@@ -12,8 +12,8 @@ include:
 {{ formula }}-client-archive-absent:
   file.absent:
     - names:
-      - {{ d.dir.tmp }}/client*
-      - {{ d.client.pkg.path }}/bin
+      - {{ d.dir.tmp }}{{ '/' if grains.os != 'Windows' else '\' }}client*
+      - {{ d.client.pkg.path }}{{ '/bin/' if grains.os != 'Windows' else '\' }}
         {%- if d.linux.altpriority|int == 0 or grains.os_family in ('Arch', 'MacOS') %}
             {%- for cmd in d.client.pkg.commands|unique %}
       - /usr/local/bin/{{ cmd }}

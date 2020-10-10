@@ -12,8 +12,7 @@
 {{ formula }}-devtools-archive-{{ tool }}-clean:
   file.absent:
     - names:
-      - {{ d.devtools['pkg'][tool]['path'] }}/bin/{{ tool }}
-      - {{ d.devtools['pkg'][tool]['path'] }}/{{ tool }}
+      - {{ d.devtools['pkg'][tool]['path'] }}{{ '\' if grains.os == 'Windows' else '/bin/' }}{{ tool }}
                 {%- for cmd in d.devtools['pkg'][tool]['commands']|unique %}
       - /usr/local/bin/{{ cmd }}
                 {%- endfor %}
